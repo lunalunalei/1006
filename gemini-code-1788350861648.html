@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! 專屬機票抽獎機</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="card-container">
+        <header class="header">
+            <span class="badge">SPECIAL FLIGHT</span>
+            <h1>HAPPY BIRTHDAY!</h1>
+            <p class="subtitle">專屬雙人機票抽獎卡</p>
+        </header>
+
+        <div class="boarding-pass">
+            <div class="pass-header">
+                <span>BOARDING PASS</span>
+                <span>AIRLINE: LOVE 520</span>
+            </div>
+            
+            <div class="pass-body">
+                <div class="info-group">
+                    <label>PASSENGER</label>
+                    <div class="value">壽星親啟 (DEAR BOYFRIEND)</div>
+                </div>
+                
+                <div class="route">
+                    <div class="station">
+                        <span class="code">TPE</span>
+                        <span class="city">台北</span>
+                    </div>
+                    <div class="plane-icon">✈️</div>
+                    <div class="station">
+                        <span class="code">???</span>
+                        <span class="city">目的地</span>
+                    </div>
+                </div>
+
+                <div class="scratch-container">
+                    <div class="prize-text" id="prizeText">塞入抽中地點</div>
+                    <canvas id="scratchCanvas"></canvas>
+                </div>
+            </div>
+
+            <div class="pass-footer">
+                <p>💡 用手指刮開上方灰框，揭曉本次生日之旅地點！</p>
+            </div>
+        </div>
+
+        <footer class="notice">
+            <p>* 備註：出發日期由二人共同商議，憑此截圖向機長兌換。</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
