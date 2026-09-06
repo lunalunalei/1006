@@ -10,7 +10,7 @@ const randomPrize = destinations[Math.floor(Math.random() * destinations.length)
 
 // 設定頁面文字
 const prizeTextElem = document.getElementById('prizeText');
-prizeTextElem.innerHTML = `恭喜抽中！<br>${randomPrize.name}`;
+prizeTextElem.innerHTML = `一起去～～<br>${randomPrize.name}`;
 
 // 2. 初始化 HTML5 Canvas 刮刮膜
 const canvas = document.getElementById('scratchCanvas');
