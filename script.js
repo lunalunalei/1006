@@ -1,8 +1,11 @@
 // 1. 設定可抽取的目的地列表
 const destinations = [
-    { name: "🍎 青森", code: "AOJ", desc: "蘋果與溫泉之旅" },
-    { name: "❄️ 北海道", code: "CTS", desc: "雪景與海鮮饗宴" },
-    { name: "👅 仙台", code: "SDJ", desc: "牛舌與浪漫巡禮" }
+    { name: "🍎 青森", code: "AOJ", desc: "蘋果與溫泉" },
+    { name: "❄️ 北海道", code: "CTS", desc: "雪景和海鮮" },
+    { name: "👅 仙台", code: "SDJ", desc: "牛舌！！！" }
+    { name: "🗻 東京", code: "TYO", desc: "富士山走走～" },
+    { name: "🍊 濟州島", code: "CJU", desc: "海景與超好吃黑豬肉" },
+    { name: "🌺 沖繩", code: "OKA", desc: "陽光與清澈海灘" }
 ];
 
 // 隨機抽取一個地點
