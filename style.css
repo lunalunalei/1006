@@ -117,6 +117,7 @@ body {
 }
 
 /* 刮刮樂容器 */
+/* 刮刮樂容器 */
 .scratch-container {
     position: relative;
     width: 100%;
@@ -129,6 +130,18 @@ body {
     justify-content: center;
     align-items: center;
     border: 2px dashed #E28743;
+}
+
+/* 確保 Canvas 畫布完整蓋在文字上方 */
+#scratchCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    cursor: pointer;
+    touch-action: none; /* 防止手機刮動時畫面滾動 */
+    z-index: 2; /* 確保畫布在文字上方 */
 }
 
 .prize-text {
