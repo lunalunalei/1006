@@ -1,172 +1,112 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+// 1. 設定包含 6 個地點的抽獎池
+const destinations = [
+    { name: "🍎 青森", code: "AOJ", desc: "蘋果與溫泉之旅" },
+    { name: "❄️ 北海道", code: "CTS", desc: "雪景與海鮮饗宴" },
+    { name: "👅 仙台", code: "SDJ", desc: "牛舌與浪漫巡禮" },
+    { name: "🗼 東京", code: "TYO", desc: "時尚與迪士尼之旅" },
+    { name: "🌴 沖繩", code: "OKA", desc: "陽光與海灘渡假" },
+    { name: "🍊 濟州島", code: "CJU", desc: "浪漫海島與黑豬肉" }
+];
+
+let canvas, ctx;
+let isDrawing = false;
+let isFinished = false;
+
+function initScratchCard() {
+    canvas = document.getElementById('scratchCanvas');
+    if (!canvas) return;
+    ctx = canvas.getContext('2d');
+
+    // 1. 隨機抽取一個地點
+    const randomPrize = destinations[Math.floor(Math.random() * destinations.length)];
+    const prizeTextElem = document.getElementById('prizeText');
+    prizeTextElem.innerHTML = `恭喜抽中！<br>${randomPrize.name}`;
+
+    // 2. 正確校正 Canvas 的手機解析度
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width || canvas.offsetWidth || 300;
+    canvas.height = rect.height || canvas.offsetHeight || 110;
+
+    // 3. 繪製灰色刮刮膜遮罩
+    ctx.fillStyle = '#C0C0C0';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 4. 在遮罩上印製提示文字
+    ctx.fillStyle = '#555555';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('刮開揭曉地點 ✈️', canvas.width / 2, canvas.height / 2);
+
+    // 5. 綁定觸控與滑鼠事件
+    setupEvents();
 }
 
-body {
-    background-color: #1B2A4A; /* 日系深藍 */
-    color: #F5F7FA;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-    touch-action: manipulation;
+function scratch(e) {
+    if (!isDrawing || isFinished) return;
+    if (e.cancelable) e.preventDefault(); // 防止手機畫面捲動
+    
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches ? e.touches[0] : e;
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(x, y, 22, 0, Math.PI * 2);
+    ctx.fill();
+
+    checkScratchPercentage();
 }
 
-.card-container {
-    width: 100%;
-    max-width: 380px; /* 手機最佳體驗寬度 */
-    text-align: center;
+function checkScratchPercentage() {
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = imageData.data;
+    let transparentPixels = 0;
+
+    for (let i = 3; i < pixels.length; i += 4) {
+        if (pixels[i] === 0) transparentPixels++;
+    }
+
+    const percentage = transparentPixels / (pixels.length / 4);
+
+    // 刮開超過 35% 自動全部揭曉並放花彩
+    if (percentage > 0.35 && !isFinished) {
+        isFinished = true;
+        canvas.style.transition = 'opacity 0.5s';
+        canvas.style.opacity = '0';
+        setTimeout(() => {
+            canvas.style.display = 'none';
+        }, 500);
+
+        // 慶祝花彩效果
+        if (typeof confetti === 'function') {
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+        }
+    }
 }
 
-.header {
-    margin-bottom: 20px;
+function setupEvents() {
+    // 滑鼠事件
+    canvas.addEventListener('mousedown', (e) => { isDrawing = true; scratch(e); });
+    canvas.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('mousemove', scratch);
+
+    // 手機觸控事件
+    canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); }, { passive: false });
+    canvas.addEventListener('touchend', () => isDrawing = false);
+    canvas.addEventListener('touchmove', scratch, { passive: false });
 }
 
-.badge {
-    background-color: #E28743; /* 暖橘金點綴 */
-    color: #fff;
-    font-size: 13px;
-    padding: 4px 14px;
-    border-radius: 12px;
-    letter-spacing: 1px;
-    font-weight: bold;
-}
-
-.header h1 {
-    font-size: 26px;
-    margin-top: 10px;
-    color: #FFF;
-    letter-spacing: 1px;
-}
-
-.subtitle {
-    font-size: 14px;
-    color: #A0AEC0;
-    margin-top: 4px;
-}
-
-/* 登機證卡片風格 */
-.boarding-pass {
-    background: #FFFFFF;
-    color: #2D3748;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    position: relative;
-}
-
-.pass-header {
-    background: #2B3A4A;
-    color: #E28743;
-    padding: 12px 20px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
-.pass-body {
-    padding: 20px;
-}
-
-.info-group {
-    text-align: left;
-    margin-bottom: 15px;
-}
-
-.info-group label {
-    font-size: 10px;
-    color: #718096;
-    display: block;
-    letter-spacing: 1px;
-}
-
-.info-group .value {
-    font-size: 16px;
-    font-weight: bold;
-    color: #1A202C;
-    margin-top: 2px;
-}
-
-.route {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px 0;
-    padding: 0 10px;
-}
-
-.station {
-    display: flex;
-    flex-direction: column;
-}
-
-.station .code {
-    font-size: 28px;
-    font-weight: 800;
-    color: #1B2A4A;
-}
-
-.station .city {
-    font-size: 12px;
-    color: #718096;
-}
-
-.plane-icon {
-    font-size: 24px;
-}
-
-/* 刮刮樂區域 */
-.scratch-container {
-    position: relative;
-    width: 100%;
-    height: 110px;
-    margin-top: 15px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: #FFF5EA;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 2px dashed #E28743;
-}
-
-.prize-text {
-    font-size: 22px;
-    font-weight: bold;
-    color: #D69E2E;
-    text-align: center;
-    padding: 10px;
-    line-height: 1.4;
-    z-index: 1;
-}
-
-#scratchCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important;
-    cursor: pointer;
-    touch-action: none; /* 防止手機刮動時畫面跟著捲動 */
-    z-index: 2; /* 確保畫布一定蓋在文字上方 */
-}
-
-.pass-footer {
-    background: #F7FAFC;
-    padding: 12px;
-    font-size: 12px;
-    color: #718096;
-    border-top: 1px dashed #E2E8F0;
-}
-
-.notice {
-    margin-top: 20px;
-    font-size: 12px;
-    color: #A0AEC0;
+// 確保手機 DOM 完全載入後才初始化
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(initScratchCard, 100);
+} else {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(initScratchCard, 100);
+    });
 }
