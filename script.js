@@ -20,7 +20,7 @@ function initScratchCard() {
     // 1. 隨機抽取一個地點
     const randomPrize = destinations[Math.floor(Math.random() * destinations.length)];
     const prizeTextElem = document.getElementById('prizeText');
-    prizeTextElem.innerHTML = `恭喜抽中！<br>${randomPrize.name}`;
+    prizeTextElem.innerHTML = `一起去～～<br>${randomPrize.name}`;
 
     // 2. 正確校正 Canvas 的手機解析度
     const rect = canvas.getBoundingClientRect();
